@@ -1,1 +1,3068 @@
-
+.data
+introduction: .asciiz "Welcome to the game of Blackjack by Andres Medina\nEach player will
+begin with $1000 and play against the dealer.\n"
+Explanation: .asciiz "For this game you can have up to 3 players playing against the
+dealer.\nThe game will run for a total of 10 rounds or until\neach player has run out of money.\n"
+PlayerQuestion: .asciiz "How many players would you like to have in this game? (pick a number
+in the range of 1 to 3):"
+GameExplanation: .asciiz "For each round, each player will receive two random cards from the
+deck.\nThen each player will decide to keep, hold, or receive another random card\nwhile trying to get as close as
+possible to the number 21.\nAfter each player is done with their turn, the dealer will then try to get a\nhigher number
+than all of the players or match them at 21.\n"
+nextline: .asciiz "\n"
+Error1: .asciiz "The number you entered is out of the range, try again.\n"
+Input1introduction: .asciiz "Use has chosen to play with 1 player against the dealer.\n"
+Input2introduction: .asciiz "Use has chosen to play with 2 players against the dealer.\n"
+Input3introduction: .asciiz "Use has chosen to play with 3 players against the dealer.\n"
+PreInput1Money: .asciiz "As of now each player has a total of $1000.\nThe minimum each player
+can bet every round is $1 and the maximum is their individual total amount of $.\n"
+Money1: .asciiz "Player 1 currently has "
+Money2: .asciiz "Player 2 currently has "
+Money3: .asciiz "Player 3 currently has "
+MoneySign: .asciiz "$\n\n"
+AskBet: .asciiz "Player 1, how much would you like to bet for this round:\n(Enter a bet within the
+range of player 1 total money)\n"
+AskBet2: .asciiz "Player 2, how much would you like to bet for this round:\n(Enter a bet within the
+range of player 2 total money)\n"
+AskBet3: .asciiz "Player 3, how much would you like to bet for this round:\n(Enter a bet within the
+range of player 3 total money)\n"
+ErrorBet: .asciiz "The bet you have entered is outside the range of your total money. Try again.\n"
+NewLine: .asciiz "\n"
+Player1Bet: .asciiz "Player 1 bet for this round is "
+Player2Bet: .asciiz "Player 2 bet for this round is "
+Player3Bet: .asciiz "Player 3 bet for this round is "
+FirstCardsSent: .asciiz "Your first two cards are: \n"
+SpaceAnd: .asciiz " and "
+CardTotal: .asciiz "Your current card total is: "
+CardTotalPlayer1:.asciiz "Player 1 current card total is: "
+CardTotalPlayer2:.asciiz "Player 2 current card total is: "
+CardTotalPlayer3:.asciiz "Player 3 current card total is: "
+NewTotal: .asciiz "Your new total is: "
+NewTotalPlayer1: .asciiz "Player 1 new card total is: "
+NewTotalPlayer2: .asciiz "Player 2 new card total is: "
+NewTotalPlayer3: .asciiz "Player 3 new card total is: "
+HitOrHoldOption: .asciiz "Press 1 to hit or press 2 to hold:\n"
+InvalidEntry: .asciiz "Invalid entry. Try again.\n"
+Bust1: .asciiz "Looks like that is a bust! You have gone over 21.\n"
+HouseWin1: .asciiz "The house wins this round.\nPlayer 1 loss is: "
+EndGame1: .asciiz "Game over!\nPlayer1 has ended the game with: "
+Thanks: .asciiz "Thanks for playing!"
+DealerTurn1: .asciiz "Now it is the dealer's turn.\n"
+DealerCardTotal: .asciiz "Dealer's current card total is: "
+DealerBustSent: .asciiz "Dealer has gone over 21. That is a bust!\n"
+Player1Draw: .asciiz "Player 1 and the dealer are in a draw.\nThe money player 1 bet will be given
+back.\n"
+Player2Draw: .asciiz "Player 2 and the dealer are in a draw.\nThe money player 2 bet will be given
+back.\n"
+Player3Draw: .asciiz "Player 3 and the dealer are in a draw.\nThe money player 3 bet will be given
+back.\n"
+Dealer1HitSent: .asciiz "Dealer has chosen to hit.\n"
+Dealer1WinSent: .asciiz "The dealer has won this round.\nPlayer 1 loses their bet.\n"
+Player1WonSent: .asciiz "Player 1 has won this round against the dealer.\n"
+Player2WonSent: .asciiz "Player 2 has won this round against the dealer.\n"
+Player3WonSent: .asciiz "Player 3 has won this round against the dealer.\n"
+Player1AskBet: .asciiz "Player 1, how much would you like to bet for this round:\n(Enter a bet within the
+range of your total money)\n"
+Player1Bust2: .asciiz "That's a bust!Player 1 loses bet for this round.\nPlayer 1 loss is: "
+Player2Bust2: .asciiz "That's a bust!Player 2 loses bet for this round.\nPlayer 2 loss is: "
+Player3Bust2: .asciiz "That's a bust!Player 3 loses bet for this round.\nPlayer 3 loss is: "
+Player1TurnSent: .asciiz "Player 1 turn:\n"
+Player2TurnSent: .asciiz "Player 2 turn:\n"
+Player3TurnSent: .asciiz "Player 3 turn:\n"
+PlayersBust: .asciiz "All Players have gotten a Bust.\nThe dealer automatically wins and game will
+move on to next round.\n\n"
+Player1Loss2Sent:.asciiz "Player 1 has lost against the dealer this round.\nPlayer 1 loses their bet.\n"
+Player2Loss2Sent:.asciiz "Player 2 has lost against the dealer this round.\nPlayer 2 loses their bet.\n"
+Player3Loss2Sent:.asciiz "Player 3 has lost against the dealer this round.\nPlayer 3 loses their bet.\n"
+AllPlayersMoneyLoss: .asciiz "All players have lost their money.\nThe game is now over.\nThanks for
+playing!\n"
+GameOverRound: .asciiz "Round 10 is complete. Game over!\nPlayers have ended the game
+with:\n"
+Player1End$: .asciiz "Player 1: "
+Player2End$: .asciiz "Player 2: "
+Player3End$: .asciiz "Player 3: "
+Player1Skip: .asciiz "Since player 1 is out of money,\nplayer 1 will be skipped for the rest of the game
+:(\n"
+Player2Skip: .asciiz "Since player 2 is out of money,\nplayer 2 will be skipped for the rest of the game
+:(\n"
+Player3Skip: .asciiz "Since player 3 is out of money,\nplayer 3 will be skipped for the rest of the game
+:(\n"
+Ace: .asciiz "(Ace)"
+Jack: .asciiz "(Jack)"
+Queen: .asciiz "(Queen)"
+King: .asciiz "(King)"
+Round: .asciiz "Round: "
+TotalPlayerMoneyArray: .word 1000,1000 #Set the array for starting total money for both
+players
+TotalPlayerMoneyArray3: .word 1000,1000,1000 #Set the array for starting total money for each
+player
+PlayerBetArray3: .word 0,0,0 #Set the array for player bets
+.text
+main:
+li $v0, 4 #Display Introduction
+la $a0, introduction
+syscall
+li $v0, 4 #skip to next line
+la $a0, nextline
+syscall
+li $v0, 4 #Display first game explanation
+la $a0, GameExplanation
+syscall
+li $v0, 4 #skip to next line
+la $a0, nextline
+syscall
+li $v0, 4 #Display explanation
+la $a0, Explanation
+syscall
+li $v0, 4 #skip to next line
+la $a0, nextline
+syscall
+Askforplayeramount:
+li $v0, 4 #Display question asking how many players will be in the game
+la $a0, PlayerQuestion
+syscall
+li $v0, 4 #skip to next line
+la $a0, nextline
+syscall
+li $v0, 5 #Get the user input for how many players
+syscall
+move $t0, $v0 #Move the value in $v0 into $t0
+blt $v0, 1, Playeramounterror #Branch to error fucntion if input is less than 1
+bgt $v0, 3, Playeramounterror #Branch to error fucntion if input is more than 3
+beq $t0, 1, PreInput1 #Branch to preinput1 if the input was 1
+beq $t0, 2, PreInput2 #Branch to preinput2 if the input was 2
+beq $t0, 3, PreInput3 #Branch to preinput3 if the input was 3
+li $v0, 4 #skip to next line
+la $a0, nextline
+syscall
+PreInput1: #User has chosen to have 1 player
+li $v0, 4 #Display input1 Introduction
+la $a0, Input1introduction
+syscall
+li $v0, 4 #skip to next line
+la $a0, nextline
+syscall
+#############################################################################################
+###############################################################
+#GAME 1
+Input1:
+PregameSet:
+li $t0, 0
+li $t1, 0 #Set counter for loop that runs game for 10 rounds
+li $t2, 1000 #Set starting money for player to be 1000$
+li $t3, 0
+li $t4, 0
+li $t5, 0
+li $t6, 0
+li $t7, 0
+PreGame1:
+add $t1, $t1, 1 #add 1 to the counter loop
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display "Round:"
+la $a0, Round
+syscall
+li $v0, 1 #Display round number
+add $a0, $zero, $t1
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+blt $t2, 1, EndGame #if $t2 (total player $) is less than 0 branch to endgame
+beq $t1, 11, EndGame #once the game runs for 10 rounds branch to end game
+j Game
+Game:
+li $v0, 4 #Display current play $
+la $a0, Money1
+syscall
+li $v0, 1 #Display player money stored in $t2
+add $a0, $zero, $t2
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display ask bet sentence
+la $a0, AskBet
+syscall
+li $v0, 5 #Get the users integer input for bet
+syscall
+blt $v0, 1, BetError #Branch to error fucntion if bet is less than 1$
+bgt $v0, $t2, BetError #Branch to error function if bet is more than total player 1 money
+move $t3, $v0 #Store player bet in $t3
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display player 1 bet sentence
+la $a0, Player1Bet
+syscall
+li $v0, 1 #Display player bet stored in $t3
+add $a0, $zero, $t3
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Display first cards sentence
+la $a0, FirstCardsSent
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t4, $a0 #Store first random number in $t4
+syscall
+beq $t4, 11, Player1Game1Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t4, 12, Player1Game1Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t4, 13, Player1Game1King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t4, 14, Player1Game1Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game1Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t4
+syscall
+move $t5, $t4 #Store first number in $t5. $t5 will hold the total from the cards
+li $a1, 14 #Second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t4, $a0 #Store second random number in $t4
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t4, 11, Player1Game1Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t4, 12, Player1Game1Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t4, 13, Player1Game1King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t4, 14, Player1Game1Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game1Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t4
+syscall
+add $t5, $t5, $t4
+beq $t5, 22, Game #If card total is 22 then retry player 1 turn
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display card total sentence
+la $a0, CardTotal
+syscall
+li $v0, 1 #Display addition from first two cards
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+beq $t5, 21, DealerTurn #If player gets 21, game automatically jumps to dealer turn
+HitOrHold:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Sentence that asks player for hit or hold
+la $a0, HitOrHoldOption
+syscall
+li $v0, 5 #Get the users integer input
+syscall
+blt $v0, 1, HitOrHoldError#Branch to HitOrHoldError if the input is less than 1
+bgt $v0, 2, HitOrHoldError #Branch to HitOrHoldError in the input is more than 2
+beq $v0, 1, PlayerHit #Branch to Player Hit function if the input was 1
+beq $v0, 2, DealerTurn #Branch to dealer turn if the inout was 2
+PlayerHit:
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $a1, 14 #Generate another random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t4, $a0 #Store newly generated number in $t4
+syscall
+beq $t4, 11, Player1Game1Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t4, 12, Player1Game1Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t4, 13, Player1Game1King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t4, 14, Player1Game1Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game1Face3:
+li $v0, 1 #Display second number
+add $a0, $zero, $t4
+syscall
+add $t5, $t5, $t4
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display New card total sentence
+la $a0, NewTotal
+syscall
+li $v0, 1 #Display new total
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+beq $t5, 21, DealerTurn #If player gets 21, game automatically jumps to dealer turn
+bgt $t5, 21, Bust #If the number is over 21, branch to bust
+j HitOrHold
+Bust:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4
+la $a0, Bust1 #Display bust notification
+syscall
+li $v0, 4
+la $a0, HouseWin1 #Display house win sentence
+syscall
+li $v0, 1 #Display amount of money loss
+add $a0, $zero, $t3
+syscall
+li $v0, 4 #Display money sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+sub $t2, $t2, $t3 #Subtract the bet from the player 1 total money stored in $t2
+j PreGame1
+DealerTurn:
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display intro to dealer's turn
+la $a0, DealerTurn1
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t4, $a0 #Store first random number in $t4
+syscall
+beq $t4, 11, DealerGame1Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t4, 12, DealerGame1Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t4, 13, DealerGame1King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t4, 14, DealerGame1Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame1Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t4
+syscall
+move $t6, $t4 #Store first number in $t6. $t6 will hold the total from the cards for the dealer
+li $a1, 14 #Second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t4, $a0 #Store second random number in $t4
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t4, 11, DealerGame1Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t4, 12, DealerGame1Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t4, 13, DealerGame1King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t4, 14, DealerGame1Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame1Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t4
+syscall
+add $t6, $t6, $t4 #Add second number to card total
+beq $t6, 22, DealerTurn #if first card total is 22 retry
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display dealer card total sentence
+la $a0, DealerCardTotal
+syscall
+li $v0, 1 #Display addition from first two cards- dealer ($t6)
+add $a0, $zero, $t6
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+j DealerHitOrHold
+DealerHitOrHold:
+beq $t6, $t5, Draw1 #If the dealer and player have same cards branch to draw
+blt $t6, $t5, Dealer1Hit #If the dealer has a lower number than the player branch to hit
+bgt $t6, $t5, DealerCardCheck1 #If the dealer has a higher number than the player branch to
+card check
+Draw1:
+li $v0, 4 #Display draw message
+la $a0, Player1Draw
+syscall
+j PreGame1
+Dealer1Hit:
+li $v0, 4 #Display dealer has decided to hit message
+la $a0, Dealer1HitSent
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $a1, 14 #New Random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t4, $a0 #Store random number in $t4
+syscall
+beq $t4, 11, DealerGame1Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t4, 12, DealerGame1Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t4, 13, DealerGame1King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t4, 14, DealerGame1Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame1Face3:
+li $v0, 1 #Display random number
+add $a0, $zero, $t4
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+add $t6, $t6, $t4 #Add the new number to the dealer card total
+li $v0, 4 #Display dealer card total sentence
+la $a0, DealerCardTotal
+syscall
+li $v0, 1 #Display addition from first two cards- dealer ($t6)
+add $a0, $zero, $t6
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+j DealerHitOrHold
+DealerCardCheck1:
+blt $t6, 22, Dealer1Wins #If the dealer card number is greater than player and less than 22 branch to
+dealer win
+bgt $t6, 21, Dealer1Loses #If the dealer total card number is greater than 21, dealer loses
+Dealer1Wins:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display message that dealer has won the round
+la $a0, Dealer1WinSent
+syscall
+sub $t2, $t2, $t3 #subtract the bet from the total player money
+j PreGame1
+Dealer1Loses:
+li $v0, 4 #Display message that player 1 has won the round
+la $a0, Player1WonSent
+syscall
+add $t2, $t2, $t3 #add the player bet to their total money
+j PreGame1
+BetError:
+li $v0, 4 #Display error in bet
+la $a0, ErrorBet
+syscall
+j Game #Jump back to game
+HitOrHoldError:
+li $v0, 4 #Display invalid entry notification
+la $a0, InvalidEntry
+syscall
+j HitOrHold
+EndGame:
+li $v0, 4 #Display Game over message
+la $a0, EndGame1
+syscall
+li $v0, 1 #Display player money at end of the game
+add $a0, $zero, $t2
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Display thanks message
+la $a0, Thanks
+syscall
+li $v0, 10
+syscall
+###### Player 1 Face card functions
+Player1Game1Jack1:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game1Face1
+Player1Game1Queen1:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game1Face1
+Player1Game1King1:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game1Face1
+Player1Game1Ace1:
+li $t4, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game1Face1
+######
+Player1Game1Jack2:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game1Face2
+Player1Game1Queen2:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game1Face2
+Player1Game1King2:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game1Face2
+Player1Game1Ace2:
+li $t4, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game1Face2
+######
+Player1Game1Jack3:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game1Face3
+Player1Game1Queen3:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game1Face3
+Player1Game1King3:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game1Face3
+Player1Game1Ace3:
+li $t4, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game1Face3
+########## Dealer face card functions
+DealerGame1Jack1:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame1Face1
+DealerGame1Queen1:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame1Face1
+DealerGame1King1:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame1Face1
+DealerGame1Ace1:
+li $t4, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame1Face1
+#########
+DealerGame1Jack2:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame1Face2
+DealerGame1Queen2:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame1Face2
+DealerGame1King2:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame1Face2
+DealerGame1Ace2:
+li $t4, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame1Face2
+###############
+DealerGame1Jack3:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame1Face3
+DealerGame1Queen3:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame1Face3
+DealerGame1King3:
+li $t4, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame1Face3
+DealerGame1Ace3:
+li $t4, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame1Face3
+#############################################################################################
+###########################################
+#GAME 2
+PreInput2:
+li $v0, 4 #Display input2 Introduction
+la $a0, Input2introduction
+syscall
+li $v0, 4 #skip to next line
+la $a0, nextline
+syscall
+Input2:
+PregameSet2:
+li $t0, 0 #Set counter for loop that runs game for 10 rounds
+li $t1, 0
+li $t2, 0
+li $t3, 0
+li $t4, 0
+li $t5, 0
+li $t6, 0
+li $t7, 0
+PreGame2:
+add $t0, $t0, 1 #add 1 to the counter loop
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display "Round:"
+la $a0, Round
+syscall
+li $v0, 1 #Display round number
+add $a0, $zero, $t0
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+beq $t0, 11, EndGame2 #once the game runs for 10 rounds branch to end game
+PrePlayer1Array: #This will start the paret that checks if player 1 money is less than 0
+li $t7, 0 #Set the register to 0 for retreiving first element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+li $v0, 4 #Display player 1 money sentence
+la $a0, Money1
+syscall
+li $v0, 1 #Display player money stored in $t3
+add $a0, $zero, $t3
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+blt $t3, 1, CheckPlayer2Total #If player 1 has less than 1$ branch to check player 2
+$
+j DisplayPlayer2Money
+CheckPlayer2Total: #Check if player 2 also has 0 money to end the game or continue
+li $t7, 4 #Set the register to 4 for retreiving second element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the second element from the array onto $t3
+li $v0, 4 #Display player 2 money sentence
+la $a0, Money2
+syscall
+li $v0, 1 #Display player money stored in $t3
+add $a0, $zero, $t3
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+blt $t3, 1, EndGame2Money #If player two also has less than 1$ branch
+to end game
+li $t7, 0
+j Game2 #If Player 2 still has money continue
+DisplayPlayer2Money: #Player 1 still has money, display player 2 money and continue to game
+li $t7, 4 #Set the register to 4 for retreiving second element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the second element from the array onto $t3
+li $v0, 4 #Display player 2 money sentence
+la $a0, Money2
+syscall
+li $v0, 1 #Display player money stored in $t3
+add $a0, $zero, $t3
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+j Game2
+Game2:
+###########Skip Function player 1
+CheckToSkipPlayer1Game2:
+li $t7, 0 #Set the register to 0 for retreiving first element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+blt $t3, 1, SkipPlayer1G2F1
+sw $t3, TotalPlayerMoneyArray($t7) #store the first element from the array onto $t3
+Player1Game2Bet:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display ask bet sentence for player 1
+la $a0, AskBet
+syscall
+li $v0, 5 #Get the users integer input for bet
+syscall
+move $t1, $v0 #Store player 1 bet in $t1
+blt $t1, 1, BetErrorPlayer1 #Branch to error fucntion if bet is less than 1$
+li $t7, 0
+lw $t3, TotalPlayerMoneyArray($t7) #Load the second element from the array onto $t3
+bgt $t1, $t3, BetErrorPlayer1 #Branch to beterror2 if bet goes over max $
+j AskPlayer2Bet
+##########Skip Function
+SkipPlayer1G2F1:
+li $v0, 4 #Display that player 1 will be skipped
+la $a0, Player1Skip
+syscall
+j AskPlayer2Bet
+#Now ask player two for bet
+AskPlayer2Bet:
+#############Skip Function
+li $t7, 4 #Set the register to 4 for retreiving second element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+blt $t3, 1, SkipPlayer2G2F1
+sw $t3, TotalPlayerMoneyArray($t7)
+############
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display ask bet sentence for player 2
+la $a0, AskBet2
+syscall
+li $v0, 5 #Get the users integer input for bet
+syscall
+move $t2, $v0 #Store player 1 bet in $t2
+blt $t2, 1, BetErrorPlayer2 #If bet is less than 1$ branch to beterrorplayer2
+li $t7, 4
+lw $t3, TotalPlayerMoneyArray($t7) #Load the second element from the array onto $t3
+bgt $t2, $t3, BetErrorPlayer2 #Branch to beterror2 if bet goes over max $
+li $t7, 0 #Reset register back to 0
+li $t3, 0 #Reset register back to 0
+j ContinueGame2
+############## Skip Function
+SkipPlayer2G2F1:
+li $v0, 4 #Display that player 2 will be skipped
+la $a0, Player2Skip
+syscall
+j Player1Turn
+ContinueGame2:
+######Skip Function for player 1
+li $t7, 0 #Set the register to 0 for retreiving first element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+blt $t3, 1, Player2Turn
+Player1Turn:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display that its player 1's turn
+la $a0, Player1TurnSent
+syscall
+li $v0, 4 #Display player 1 bet sentence
+la $a0, Player1Bet
+syscall
+li $v0, 1 #Display player bet stored in $t3
+add $a0, $zero, $t1
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Display first cards sentence
+la $a0, FirstCardsSent
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store first random number in $t3
+syscall
+beq $t3, 11, Player1Game2Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, Player1Game2Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, Player1Game2King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, Player1Game2Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game2Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t3
+syscall
+move $t4, $t3 #Store first number in $t4. $t4 will hold the total from the cards
+li $a1, 14 #Second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store second random number in $t3
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t3, 11, Player1Game2Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, Player1Game2Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, Player1Game2King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, Player1Game2Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game2Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t3
+syscall
+add $t4, $t4, $t3 #Add number to total cards
+beq $t4, 22, Player1Turn #If outcome for first cards is 22 try again
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display card total sentence for player 1
+la $a0, CardTotalPlayer1
+syscall
+li $v0, 1 #Display addition from first two cards
+add $a0, $zero, $t4
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+beq $t4, 21, Player2Turn #If player 1 gets 21, game automatically jumps to player 2 turn
+Player1HitOrHold: #This part will ask player one whether he/she wants to hot or hold
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Sentence that asks player for hit or hold
+la $a0, HitOrHoldOption
+syscall
+li $v0, 5 #Get the users integer input
+syscall
+blt $v0, 1, HitOrHoldErrorPlayer1 #Branch to HitOrHoldError if the input is less than 1
+bgt $v0, 2, HitOrHoldErrorPlayer1 #Branch to HitOrHoldError in the input is more than 2
+beq $v0, 1, Player1Hit #Branch to Player 1Hit function if the input was 1
+beq $v0, 2, Player2Turn #Branch to Player2Turn turn if the input was 2
+Player1Hit:
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $a1, 14 #Generate another random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store newly generated number in $t3
+syscall
+beq $t3, 11, Player1Game2Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, Player1Game2Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, Player1Game2King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, Player1Game2Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game2Face3:
+li $v0, 1 #Newly generated number
+add $a0, $zero, $t3
+syscall
+add $t4, $t4, $t3 #Add to total card count for player 1
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display New card total sentence for player 1
+la $a0, NewTotalPlayer1
+syscall
+li $v0, 1 #Display new total
+add $a0, $zero, $t4
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+beq $t4, 21, Player2Turn #If player 1 gets 21, game automatically jumps to player 2 turn
+bgt $t4, 21, Player1Bust #If the number is over 21, branch to bust
+j Player1HitOrHold #If number is less than 21, jump back to hit or hold option for player 1
+Player1Bust:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4
+la $a0, Bust1 #Display bust notification
+syscall
+li $v0, 4
+la $a0, Player1Bust2 #Display player 1 bust sentence
+syscall
+li $v0, 1 #Display amount of money loss
+add $a0, $zero, $t1
+syscall
+li $v0, 4 #Display money sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+#This part will load up total player1 money and subtract bet
+li $t7, 0 #Set register to 0 to pull up first array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+sub $t3, $t3, $t1 #Subtract the bet($t1) from the player 1 total money stored in $t3
+sw $t3, TotalPlayerMoneyArray($t7) #Store new money total back into the array
+j Player2Turn
+Player2Turn:
+#############
+li $t7, 4 #Set the register to 4 for retreiving second element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+blt $t3, 1, PreDealerTurn
+sw $t3, TotalPlayerMoneyArray($t7)
+###########
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display that its player 2's turn
+la $a0, Player2TurnSent
+syscall
+li $v0, 4 #Display player 2 bet sentence
+la $a0, Player2Bet
+syscall
+li $v0, 1 #Display player bet stored in $t3
+add $a0, $zero, $t2
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Display first cards sentence
+la $a0, FirstCardsSent
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store first random number in $t3
+syscall
+beq $t3, 11, Player2Game2Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, Player2Game2Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, Player2Game2King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, Player2Game2Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer2Game2Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t3
+syscall
+move $t5, $t3 #Store first number in $t5. $t5 will hold the card total for player 2
+li $a1, 14 #Second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store second random number in $t3
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t3, 11, Player2Game2Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, Player2Game2Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, Player2Game2King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, Player2Game2Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer2Game2Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t3
+syscall
+add $t5, $t5, $t3 #Add number to total cards
+beq $t5, 22, Player2Turn #If first card outcome is 22 retry
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display card total sentence for player 2
+la $a0, CardTotalPlayer2
+syscall
+li $v0, 1 #Display addition from first two cards stored in $t5
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+beq $t5, 21, PreDealerTurn #If player 1 gets 21, game automatically jumps to dealer turn
+Player2HitOrHold:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Sentence that asks player for hit or hold
+la $a0, HitOrHoldOption
+syscall
+li $v0, 5 #Get the users integer input
+syscall
+blt $v0, 1, HitOrHoldErrorPlayer2 #Branch to HitOrHoldError if the input is less than 1
+bgt $v0, 2, HitOrHoldErrorPlayer2 #Branch to HitOrHoldError in the input is more than 2
+beq $v0, 1, Player2Hit #Branch to Player 1Hit function if the input was 1
+beq $v0, 2, PreDealerTurn #Branch to Dealerturn1 if the input was 2
+Player2Hit:
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $a1, 14 #Generate another random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store newly generated number in $t3
+syscall
+beq $t3, 11, Player2Game2Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, Player2Game2Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, Player2Game2King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, Player2Game2Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer2Game2Face3:
+li $v0, 1 #Display Newly generated number
+add $a0, $zero, $t3
+syscall
+add $t5, $t5, $t3 #Add to total card count for player 2
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display New card total sentence for player 1
+la $a0, NewTotalPlayer2
+syscall
+li $v0, 1 #Display new total
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+beq $t5, 21, PreDealerTurn #If player 1 gets 21, game automatically jumps to dealer turn
+bgt $t5, 21, Player2Bust #If the number is over 21, branch to bust
+j Player2HitOrHold #If number is less than 21, jump back to hit or hold option for player 1
+Player2Bust:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4
+la $a0, Bust1 #Display bust notification
+syscall
+li $v0, 4
+la $a0, Player2Bust2 #Display player 2 bust sentence
+syscall
+li $v0, 1 #Display amount of money loss player 2 bet($t2)
+add $a0, $zero, $t2
+syscall
+li $v0, 4 #Display money sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+#This part will load up total player2 money and subtract bet
+li $t7, 4 #Set register to 4 to pull up second array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+sub $t3, $t3, $t2 #Subtract the bet($t1) from the player 1 total money stored in $t3
+sw $t3, TotalPlayerMoneyArray($t7) #Store new money total back into the array
+li $t7, 0 #Reset the register back to 0
+j PreDealerTurn
+PreDealerTurn:
+CheckForPlayerBust1To2:
+bgt $t4, 21, CheckForPlayer2Bust #Branch if player 1 total card count is over 21
+j DealerTurn2 #If not branch to dealer turn
+CheckForPlayer2Bust:
+bgt $t5, 21, BothPlayerBust #Branch if both players have gotten a bust
+j DealerTurn2 #If not branch to dealer turn
+BothPlayerBust:
+li $v0, 4 #Display that both players have busted
+la $a0, PlayersBust
+syscall
+j PreGame2
+DealerTurn2:
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display intro to dealer's turn
+la $a0, DealerTurn1
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store first random number in $t4
+syscall
+beq $t3, 11, DealerGame2Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, DealerGame2Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, DealerGame2King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, DealerGame2Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame2Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t3
+syscall
+move $t6, $t3 #Store first number in $t6. $t6 will hold the total from the cards for the dealer
+li $a1, 14 #Second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store second random number in $t3
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t3, 11, DealerGame2Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, DealerGame2Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, DealerGame2King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, DealerGame2Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame2Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t3
+syscall
+add $t6, $t6, $t3 #Add second number to card total
+beq $t6, 22, DealerTurn2 #If card outcome is 22 then retry
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display dealer card total sentence
+la $a0, DealerCardTotal
+syscall
+li $v0, 1 #Display addition from first two cards- dealer ($t6)
+add $a0, $zero, $t6
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+DealerHitOrHold2:
+blt $t6, 17, Dealer2Hit #If the dealer total card number is less than 17 branch to dealer hit
+bgt $t6, 16, Dealer2Hold #If the dealer has 17 or more hold
+Dealer2Hit:
+li $v0, 4 #Display dealer has decided to hit message
+la $a0, Dealer1HitSent
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $a1, 14 #New Random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t3, $a0 #Store random number in $t3
+syscall
+beq $t3, 11, DealerGame2Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t3, 12, DealerGame2Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t3, 13, DealerGame2King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t3, 14, DealerGame2Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame2Face3:
+li $v0, 1 #Display random number
+add $a0, $zero, $t3
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+add $t6, $t6, $t3 #Add the new number to the dealer card total
+li $v0, 4 #Display dealer card total sentence
+la $a0, DealerCardTotal
+syscall
+li $v0, 1 #Display addition from first two cards- dealer ($t6)
+add $a0, $zero, $t6
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+bgt $t6, 21, Dealer2Bust #If total is over 21 branch to dealer 2 bust
+j DealerHitOrHold2
+Dealer2Bust: #If dealer has a bust, make fucntions to add money to total player money
+li $v0, 4 #Display dealer bust sentence
+la $a0, DealerBustSent
+syscall
+PrePlayer1BustWin2: ############Skip function
+li $t7, 0 #Set the register to 0 for retreiving first element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto
+$t3
+blt $t3, 1, PrePlayer2BustWin2
+sw $t3, TotalPlayerMoneyArray($t7)
+bgt $t4, 21, PrePlayer2BustWin2 #If player 1 has gotten bust skip this part
+Player1BustWin2: #This function add bet money to total player 1 money
+li $t7, 0 #Set register to 0 to pull up first array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+add $t3, $t3, $t1 #add the bet($t1) from the player 1 total money stored in $t3
+sw $t3, TotalPlayerMoneyArray($t7) #Store new money total back into the array
+PrePlayer2BustWin2: ##########Skip Function player 2
+li $t7, 4 #Set the register to 4 for retreiving second element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto
+$t3
+blt $t3, 1, PostPlayerWinsBust
+sw $t3, TotalPlayerMoneyArray($t7)
+bgt $t5, 21, PostPlayerWinsBust #If player 2 has gotten bust skip this part
+Player2BustWin2: #This function add bet money to total player 2 money
+li $t7, 4 #Set register to 4 to pull up second array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+add $t3, $t3, $t2 #add the bet($t2) from the player 2 total money stored in $t3
+sw $t3, TotalPlayerMoneyArray($t7) #Store new money total back into the array
+li $t7, 0 #Reset register
+PostPlayerWinsBust:
+j PreGame2
+Dealer2Hold:
+PrePlayer1EndRoundCheck2: #This function will check if player 1 needs to be skipped
+li $t7, 0 #Set the register to 0 for retreiving first element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto
+$t3
+blt $t3, 1, PrePlayer2EndRoundCheck2
+sw $t3, TotalPlayerMoneyArray($t7)
+bgt $t4, 21, PrePlayer2EndRoundCheck2 #If player has gotten a bust then skip this
+part
+Player1EndRoundCheck2:
+beq $t4, $t6, Player1Draw2 #If player 1 and dealer had draw, branch
+bgt $t4, $t6, Player1Win2 #If player 1 has higher card, branch
+blt $t4, $t6, Player1Loss2 #If player 1 has lower card, branch
+Player1Draw2:
+li $v0, 4 #Display draw message for player 1
+la $a0, Player1Draw
+syscall
+j PrePlayer2EndRoundCheck2
+Player1Win2:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 1 won round
+la $a0, Player1WonSent
+syscall
+li $t7, 0 #Set register to 0 to pull up first array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+add $t3, $t3, $t1 #add the bet($t1) from the player 1 total money stored in $t3
+sw $t3, TotalPlayerMoneyArray($t7) #Store new money total back into the array
+j PrePlayer2EndRoundCheck2
+Player1Loss2:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 1 lost round
+la $a0, Player1Loss2Sent
+syscall
+li $t7, 0 #Set register to 0 to pull up first array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+sub $t3, $t3, $t1 #subtract the bet($t1) from the player 1 total money stored in
+$t3
+sw $t3, TotalPlayerMoneyArray($t7) #Store new money total back into the array
+j PrePlayer2EndRoundCheck2
+PrePlayer2EndRoundCheck2:
+li $t7, 4 #Set the register to 4 for retreiving second element from array
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto
+$t3
+blt $t3, 1, EndOfRound2
+sw $t3, TotalPlayerMoneyArray($t7)
+bgt $t5, 21, EndOfRound2 #Skip player 2 if they have gotten a bust
+Player2EndRoundCheck2:
+beq $t5, $t6, Player2Draw2 #If player 2 and dealer had draw, branch
+bgt $t5, $t6, Player2Win2 #If player 2 has higher card, branch
+blt $t5, $t6, Player2Loss2 #If player 2 has lower card, branch
+Player2Draw2:
+li $v0, 4 #Display draw message for player 2
+la $a0, Player2Draw
+syscall
+j EndOfRound2 #jump to end of round
+Player2Win2:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 2 won round
+la $a0, Player2WonSent
+syscall
+li $t7, 4 #Set register to 4 to pull up second array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the second element from the array onto $t3
+add $t3, $t3, $t2 #add the bet($t2) from the player 2 total money stored in $t3
+sw $t3, TotalPlayerMoneyArray($t7) #Store new money total back into the array
+j EndOfRound2 #jump to end of round
+Player2Loss2:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 2 lost round
+la $a0, Player2Loss2Sent
+syscall
+li $t7, 4 #Set register to 4 to pull up first array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the second element from the array onto $t3
+sub $t3, $t3, $t2 #subtract the bet($t2) from the player 2 total money stored in
+$t3
+sw $t3, TotalPlayerMoneyArray($t7) #Store new money total back into the array
+j EndOfRound2 #jump to end of round
+EndOfRound2:
+j PreGame2
+EndGame2Money: #This function ends the game if both players have run out of money
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Notification that all players lost their money
+la $a0, AllPlayersMoneyLoss
+syscall
+li $v0, 4 #Player 1:
+la $a0, Player1End$
+syscall
+li $t7, 0 #Set register to 0 to pull up first array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+li $v0, 1
+add $a0, $zero, $t3 #Display money player 1
+syscall
+sw $t3, TotalPlayerMoneyArray($t7) #Store
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Player 2:
+la $a0, Player2End$
+syscall
+li $t7, 4 #Set register to 4 to pull up second array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the second element from the array onto $t3
+li $v0, 1
+add $a0, $zero, $t3 #Display money player 2
+syscall
+sw $t3, TotalPlayerMoneyArray($t7) #Store
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 10
+syscall
+BetErrorPlayer2:
+li $v0, 4 #Display error in bet
+la $a0, ErrorBet
+syscall
+j AskPlayer2Bet
+BetErrorPlayer1:
+li $v0, 4 #Display error in bet
+la $a0, ErrorBet
+syscall
+j Game2 #jump back to continuegame2
+HitOrHoldErrorPlayer1:
+li $v0, 4 #Display invalid entry notification
+la $a0, InvalidEntry
+syscall
+j Player1HitOrHold
+HitOrHoldErrorPlayer2:
+li $v0, 4 #Display invalid entry notification
+la $a0, InvalidEntry
+syscall
+j Player2HitOrHold
+EndGame2: #This function displays players' money and ends the game if round 10 is over
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Notification that round 10 is over
+la $a0, GameOverRound
+syscall
+li $v0, 4 #Player 1:
+la $a0, Player1End$
+syscall
+li $t7, 0 #Set register to 0 to pull up first array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the first element from the array onto $t3
+li $v0, 1
+add $a0, $zero, $t3 #Display money player 1
+syscall
+sw $t3, TotalPlayerMoneyArray($t7) #Store
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Player 2:
+la $a0, Player2End$
+syscall
+li $t7, 4 #Set register to 4 to pull up second array element
+lw $t3, TotalPlayerMoneyArray($t7) #Load the second element from the array onto $t3
+li $v0, 1
+add $a0, $zero, $t3 #Display money player 2
+syscall
+sw $t3, TotalPlayerMoneyArray($t7) #Store
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 10
+syscall
+###### Player 1 Face card functions
+Player1Game2Jack1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game2Face1
+Player1Game2Queen1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game2Face1
+Player1Game2King1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game2Face1
+Player1Game2Ace1:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game2Face1
+######
+Player1Game2Jack2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game2Face2
+Player1Game2Queen2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game2Face2
+Player1Game2King2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game2Face2
+Player1Game2Ace2:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game2Face2
+######
+Player1Game2Jack3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game2Face3
+Player1Game2Queen3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game2Face3
+Player1Game2King3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game2Face3
+Player1Game2Ace3:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game2Face3
+########## Player 2 Face card functions
+Player2Game2Jack1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer2Game2Face1
+Player2Game2Queen1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer2Game2Face1
+Player2Game2King1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer2Game2Face1
+Player2Game2Ace1:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer2Game2Face1
+#########
+Player2Game2Jack2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer2Game2Face2
+Player2Game2Queen2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer2Game2Face2
+Player2Game2King2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer2Game2Face2
+Player2Game2Ace2:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer2Game2Face2
+########
+Player2Game2Jack3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer2Game2Face3
+Player2Game2Queen3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer2Game2Face3
+Player2Game2King3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer2Game2Face3
+Player2Game2Ace3:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer2Game2Face3
+########## Dealer face card functions
+DealerGame2Jack1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame2Face1
+DealerGame2Queen1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame2Face1
+DealerGame2King1:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame2Face1
+DealerGame2Ace1:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame2Face1
+#########
+DealerGame2Jack2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame2Face2
+DealerGame2Queen2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame2Face2
+DealerGame2King2:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame2Face2
+DealerGame2Ace2:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame2Face2
+###############
+DealerGame2Jack3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame2Face3
+DealerGame2Queen3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame2Face3
+DealerGame2King3:
+li $t3, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame2Face3
+DealerGame2Ace3:
+li $t3, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame2Face3
+#############################################################################################
+##########################################################
+#GAME 3
+PreInput3:
+li $v0, 4 #Display input3 Introduction
+la $a0, Input3introduction
+syscall
+li $v0, 4 #skip to next line
+la $a0, nextline
+syscall
+Input3:
+PreGameSet3:
+li $t0, 0 #Set counter for loop that runs game for 10 rounds
+li $t1, 0
+li $t2, 0
+li $t3, 0
+li $t4, 0
+li $t5, 0
+li $t6, 0
+li $t7, 0
+PreGame3:
+add $t0, $t0, 1 #add 1 to the counter loop
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display "Round:"
+la $a0, Round
+syscall
+li $v0, 1 #Display round number
+add $a0, $zero, $t0
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+beq $t0, 11, EndGame3 #once the game runs for 10 rounds branch to end game
+StartPlayerCheckMoney3: #Will now begin checking player $ in case game needs to be ended
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the first element from the array onto $t5
+li $v0, 4 #Display player 1 money sentence
+la $a0, Money1
+syscall
+li $v0, 1 #Display player money stored in $t5
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+blt $t5, 1, CheckPlayer2Money3 #If player 1 has less than 1$ branch to check player 2
+$
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+j DisplayPlayer2MoneyGame3
+CheckPlayer2Money3:
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the second element from the array onto $t5
+li $v0, 4 #Display player 2 money sentence
+la $a0, Money2
+syscall
+li $v0, 1 #Display player money stored in $t5
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+blt $t5, 1, CheckPlayer3Money3 #If player 2 has less than 1$ branch to check player 3
+money
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+j DisplayPlayer3MoneyGame3 #If player 2 still has $ branch to display
+player 3 money
+CheckPlayer3Money3:
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the third element from the array onto $t5
+li $v0, 4 #Display player 3 money sentence
+la $a0, Money3
+syscall
+li $v0, 1 #Display player money stored in $t5
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+blt $t5, 1, EndGame3Money #If player 3 also doesnt have $, branch to end game
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+j Game3 #If player 3 still has $ continue to game
+DisplayPlayer2MoneyGame3:
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the second element from the array onto $t5
+li $v0, 4 #Display player 2 money sentence
+la $a0, Money2
+syscall
+li $v0, 1 #Display player money stored in $t5
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+j DisplayPlayer3MoneyGame3
+DisplayPlayer3MoneyGame3:
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the third element from the array onto $t5
+li $v0, 4 #Display player 3 money sentence
+la $a0, Money3
+syscall
+li $v0, 1 #Display player money stored in $t5
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+j Game3
+Game3:
+PrePlayer1Game3Bet: #check to see if player 1 needs to be skipped for the game
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the first element from the array onto $t5
+blt $t5, 1, SkipPlayer1Game3 #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+j Player1Game3Bet #If not, jump to player 1 bet
+SkipPlayer1Game3: #This function will display skip player 1 and also skip
+li $v0, 4 #display that player 1 will be skipped
+la $a0, Player1Skip
+syscall
+j PrePlayer2Game3Bet #Jump to this if player 1 is skipped
+Player1Game3Bet: #This function gets bet for player 1 for this round
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display ask bet sentence for player 1
+la $a0, AskBet
+syscall
+li $v0, 5 #Get the users integer input for bet
+syscall
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, PlayerBetArray3($t6) #Load the first element from the array onto $t5
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 1 total money onto $t7
+move $t5, $v0 #move the player 1 bet onto $t5
+blt $t5, 1, Player1Game3ErrorBet #If bet is less than 1$ branch to bet error
+bgt $t5, $t7, Player1Game3ErrorBet #If bet is greater than total player money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j PrePlayer2Game3Bet
+PrePlayer2Game3Bet: #check to see if player 2 needs to be skipped for the game
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the second element from the array onto $t5
+blt $t5, 1, SkipPlayer2Game3 #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+j Player2Game3Bet #If not, jump to player 2 bet
+SkipPlayer2Game3: #This function will display skip player 2 and also skip
+li $v0, 4 #display that player 2 will be skipped
+la $a0, Player2Skip
+syscall
+j PrePlayer3Game3Bet
+Player2Game3Bet:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display ask bet sentence for player 2
+la $a0, AskBet2
+syscall
+li $v0, 5 #Get the users integer input for bet
+syscall
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, PlayerBetArray3($t6) #Load the second element from the bet array onto $t5
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 1 total money onto $t7
+move $t5, $v0 #move the player 2 bet onto $t5
+blt $t5, 1, Player2Game3ErrorBet #If bet is less than 1$ branch to bet error
+bgt $t5, $t7, Player2Game3ErrorBet #If bet is greater than total player money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j PrePlayer3Game3Bet
+PrePlayer3Game3Bet: #check to see if player 3 needs to be skipped for the game
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the third element from the array onto $t5
+blt $t5, 1, SkipPlayer3Game3 #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+j Player3Game3Bet #If not, jump to player 3 bet
+SkipPlayer3Game3: #This function will display skip player 3 and also skip
+li $v0, 4 #display that player 3 will be skipped
+la $a0, Player3Skip
+syscall
+j Player1Game3Turn
+Player3Game3Bet:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display ask bet sentence for player 3
+la $a0, AskBet3
+syscall
+li $v0, 5 #Get the users integer input for bet
+syscall
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, PlayerBetArray3($t6) #Load the third element from the bet array onto $t5
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 3 total money onto $t7
+move $t5, $v0 #move the player 3 bet onto $t5
+blt $t5, 1, Player3Game3ErrorBet #If bet is less than 1$ branch to bet error
+bgt $t5, $t7, Player3Game3ErrorBet #If bet is greater than total player money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j Player1Game3Turn
+Player1Game3Turn: #This function will begin turn for player 1
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the first element from the array onto $t5
+blt $t5, 1, Player2Game3Turn #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display that its player 1's turn
+la $a0, Player1TurnSent
+syscall
+li $v0, 4 #Display player 1 bet sentence
+la $a0, Player1Bet
+syscall
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, PlayerBetArray3($t6) #Load the first element from the array onto $t5
+li $v0, 1 #Display player bet stored in temporary register $t5
+add $a0, $zero, $t5
+syscall
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+li $t5, 0 #reset register back to 0
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Display first cards sentence
+la $a0, FirstCardsSent
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store first random number in $t6
+syscall
+beq $t6, 11, Player1Game3Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player1Game3Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player1Game3King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player1Game3Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game3Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t6
+syscall
+move $t1, $t6 #Move random number onto $t1. $t1 will hold total card number for player 1
+li $a1, 14 #second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store second random number in $t6
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t6, 11, Player1Game3Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player1Game3Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player1Game3King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player1Game3Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game3Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t6
+syscall
+add $t1, $t1, $t6 #add new number to total player 1 cards
+beq $t1, 22, Player1Game3Turn #If first card total outcome is 22 restart player 1 turn
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display card total sentence for player 1
+la $a0, CardTotalPlayer1
+syscall
+li $v0, 1 #Display addition from first two cards
+add $a0, $zero, $t1
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+beq $t1, 21, Player2Game3Turn #If card outcome is 21, automatically jump to player
+2 turn
+Player1HitOrHoldGame3: #ask player 1 to hit or hold
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Sentence that asks player for hit or hold
+la $a0, HitOrHoldOption
+syscall
+li $v0, 5 #Get the users integer input
+syscall
+blt $v0, 1, HitOrHoldErrorPlayer1Game3 #Branch to HitOrHoldError if the input is less than 1
+bgt $v0, 2, HitOrHoldErrorPlayer1Game3 #Branch to HitOrHoldError in the input is more than 2
+beq $v0, 1, Player1Game3Hit #Branch to Player 1Hit function if the input was 1
+beq $v0, 2, Player2Game3Turn #Branch to Player2Turn turn if the input was 2
+Player1Game3Hit: #Function when player 1 wants to hit
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $a1, 14 #new random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store new random number in $t6
+syscall
+beq $t6, 11, Player1Game3Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player1Game3Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player1Game3King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player1Game3Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer1Game3Face3:
+li $v0, 1 #Display Newly generated number
+add $a0, $zero, $t6
+syscall
+add $t1, $t1, $t6 #add new number to total player 1 cards
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display New card total sentence for player 1
+la $a0, NewTotalPlayer1
+syscall
+li $v0, 1 #Display new total
+add $a0, $zero, $t1
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+bgt $t1, 21, Player1Game3Bust #If the number is over 21, branch to bust
+beq $t1, 21, Player2Game3Turn #If card outcome is 21, automatically jump to player
+2 turn
+j Player1HitOrHoldGame3
+Player1Game3Bust: #This function subtracts bet from total money if player 1 has bust
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4
+la $a0, Bust1 #Display bust notification
+syscall
+li $v0, 4
+la $a0, Player1Bust2 #Display player 1 bust sentence
+syscall
+li $t6, 0 #Set register to 0 to bring up first element from array
+lw $t5, PlayerBetArray3($t6) #Load the first element from the array onto $t5
+li $v0, 1 #Display amount of money loss
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Display money sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 1 total money onto $t7
+sub $t7, $t7, $t5 #subtract bet from total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j Player2Game3Turn
+Player2Game3Turn: #Player 2 Turn
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the second element from the array onto $t5
+blt $t5, 1, Player3Game3Turn #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display that its player 2's turn
+la $a0, Player2TurnSent
+syscall
+li $v0, 4 #Display player 2 bet sentence
+la $a0, Player2Bet
+syscall
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, PlayerBetArray3($t6) #Load the second element from the array onto $t5
+li $v0, 1 #Display player bet stored in temporary register $t5
+add $a0, $zero, $t5
+syscall
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+li $t5, 0 #reset register back to 0
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Display first cards sentence
+la $a0, FirstCardsSent
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store first random number in $t6
+syscall
+beq $t6, 11, Player2Game3Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player2Game3Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player2Game3King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player2Game3Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer2Game3Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t6
+syscall
+move $t2, $t6 #Move random number onto $t2. $t2 will hold total card number for player 2
+li $a1, 14 #second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store second random number in $t6
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t6, 11, Player2Game3Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player2Game3Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player2Game3King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player2Game3Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer2Game3Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t6
+syscall
+add $t2, $t2, $t6 #add new number to total player 2 cards
+beq $t2, 22, Player2Game3Turn #If first card total outcome is 22 restart player 2 turn
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display card total sentence for player 2
+la $a0, CardTotalPlayer2
+syscall
+li $v0, 1 #Display addition from first two cards
+add $a0, $zero, $t2
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+beq $t2, 21, Player3Game3Turn #If card outcome is 21, automatically jump to player
+3 turn
+Player2HitOrHoldGame3: #ask player 2 to hit or hold
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Sentence that asks player for hit or hold
+la $a0, HitOrHoldOption
+syscall
+li $v0, 5 #Get the users integer input
+syscall
+blt $v0, 1, HitOrHoldErrorPlayer2Game3 #Branch to HitOrHoldError if the input is less than 1
+bgt $v0, 2, HitOrHoldErrorPlayer2Game3 #Branch to HitOrHoldError in the input is more than 2
+beq $v0, 1, Player2Game3Hit #Branch to Player 2 Hit function if the input was 1
+beq $v0, 2, Player3Game3Turn #Branch to Player3 Turn turn if the input was 2
+Player2Game3Hit: #Function when plaer 2 wants to hit
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $a1, 14 #new random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store new random number in $t6
+syscall
+beq $t6, 11, Player2Game3Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player2Game3Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player2Game3King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player2Game3Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer2Game3Face3:
+li $v0, 1 #Display Newly generated number
+add $a0, $zero, $t6
+syscall
+add $t2, $t2, $t6 #add new number to total player 2 cards
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display New card total sentence for player 2
+la $a0, NewTotalPlayer2
+syscall
+li $v0, 1 #Display new total
+add $a0, $zero, $t2
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+beq $t2, 21, Player3Game3Turn #If card outcome is 21, automatically jump to player
+3 turn
+bgt $t2, 21, Player2Game3Bust #If the number is over 21, branch to bust
+j Player2HitOrHoldGame3
+Player2Game3Bust: #This function subtracts bet from total money if player 2 has bust
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4
+la $a0, Bust1 #Display bust notification #same for all players
+syscall
+li $v0, 4
+la $a0, Player2Bust2 #Display player 2 bust sentence
+syscall
+li $t6, 4 #Set register to 4 to bring up the second element in the arrays
+lw $t5, PlayerBetArray3($t6) #Load the first element from the array onto $t5
+li $v0, 1 #Display amount of money loss
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Display money sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 2 total money onto $t7
+sub $t7, $t7, $t5 #subtract bet from total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j Player3Game3Turn
+Player3Game3Turn: #This function will begin turn for player 3
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the third element from the array onto $t5
+blt $t5, 1, PreDealerTurnGame3 #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display that its player 3's turn
+la $a0, Player3TurnSent
+syscall
+li $v0, 4 #Display player 3 bet sentence
+la $a0, Player3Bet
+syscall
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, PlayerBetArray3($t6) #Load the third element from the array onto $t5
+li $v0, 1 #Display player bet stored in temporary register $t5
+add $a0, $zero, $t5
+syscall
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+li $t5, 0 #reset register back to 0
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Display first cards sentence
+la $a0, FirstCardsSent
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store first random number in $t6
+syscall
+beq $t6, 11, Player3Game3Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player3Game3Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player3Game3King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player3Game3Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer3Game3Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t6
+syscall
+move $t3, $t6 #Move random number onto $t3. $t3 will hold total card number for player 3
+li $a1, 14 #second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store second random number in $t6
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t6, 11, Player3Game3Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player3Game3Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player3Game3King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player3Game3Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer3Game3Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t6
+syscall
+add $t3, $t3, $t6 #add new number to total player 3 cards
+beq $t3, 22, Player3Game3Turn #If first card total outcome is 22 restart player 3 turn
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display card total sentence for player 3
+la $a0, CardTotalPlayer3
+syscall
+li $v0, 1 #Display addition from first two cards
+add $a0, $zero, $t3
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+beq $t3, 21, PreDealerTurnGame3 #If card outcome is 21, automatically jump to dealer
+turn
+Player3HitOrHoldGame3: #ask player 3 to hit or hold
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Sentence that asks player for hit or hold
+la $a0, HitOrHoldOption
+syscall
+li $v0, 5 #Get the users integer input
+syscall
+blt $v0, 1, HitOrHoldErrorPlayer3Game3 #Branch to HitOrHoldError if the input is less than 1
+bgt $v0, 2, HitOrHoldErrorPlayer3Game3 #Branch to HitOrHoldError in the input is more than 2
+beq $v0, 1, Player3Game3Hit #Branch to Player 1Hit function if the input was 1
+beq $v0, 2, PreDealerTurnGame3 #Branch to DealerTurnGame3 turn if the input was 2
+Player3Game3Hit: #Function when player 3 wants to hit
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $a1, 14 #new random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store new random number in $t6
+syscall
+beq $t6, 11, Player3Game3Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, Player3Game3Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, Player3Game3King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, Player3Game3Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostPlayer3Game3Face3:
+li $v0, 1 #Display Newly generated number
+add $a0, $zero, $t6
+syscall
+add $t3, $t3, $t6 #add new number to total player 3 cards
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display New card total sentence for player 3
+la $a0, NewTotalPlayer3
+syscall
+li $v0, 1 #Display new total
+add $a0, $zero, $t3
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+beq $t3, 21, PreDealerTurnGame3 #If card outcome is 21, automatically jump to dealer
+turn
+bgt $t3, 21, Player3Game3Bust #If the number is over 21, branch to bust
+j Player3HitOrHoldGame3
+Player3Game3Bust: #This function subtracts bet from total money if player 3 has bust
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4
+la $a0, Bust1 #Display bust notification
+syscall
+li $v0, 4
+la $a0, Player3Bust2 #Display player 3 bust sentence
+syscall
+li $t6, 8 #Set register to 8 to bring up third element from array
+lw $t5, PlayerBetArray3($t6) #Load the third element from the array onto $t5
+li $v0, 1 #Display amount of money loss
+add $a0, $zero, $t5
+syscall
+li $v0, 4 #Display money sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 3 total money onto $t7
+sub $t7, $t7, $t5 #subtract bet from total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j PreDealerTurnGame3
+PreDealerTurnGame3: #Before dealer turn check if all players have had a bust to end round early
+Game3CheckPlayerBust1: #Check for player 1 bust
+bgt $t1, 21, Game3CheckPlayerBust2
+j DealerTurnGame3
+Game3CheckPlayerBust2: #Check for player 2 bust
+bgt $t2, 21, Game3CheckPlayerBust3
+j DealerTurnGame3
+Game3CheckPlayerBust3: #Check for player 3 bust
+bgt $t3, 21, AllPlayersBustGame3 #Branch to this if all players have gottena bust
+j DealerTurnGame3
+AllPlayersBustGame3: #Since all players got a bust, skip rest of game and jump back to beginning
+li $v0, 4 #Display that both players have busted
+la $a0, PlayersBust
+syscall
+j PreGame3
+DealerTurnGame3: #Dealers turn
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display intro to dealer's turn
+la $a0, DealerTurn1
+syscall
+li $a1, 14 #First random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store first random number in $t6
+syscall
+beq $t6, 11, DealerGame3Jack1 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, DealerGame3Queen1 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, DealerGame3King1 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, DealerGame3Ace1 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame3Face1:
+li $v0, 1 #Display first number
+add $a0, $zero, $t6
+syscall
+move $t4, $t6 #Store first number in $t4. $t4 will hold the total from the cards for the dealer
+li $a1, 14 #Second random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store second random number in $t6
+syscall
+li $v0, 4 #Display space and and between first two numbers
+la $a0, SpaceAnd
+syscall
+beq $t6, 11, DealerGame3Jack2 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, DealerGame3Queen2 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, DealerGame3King2 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, DealerGame3Ace2 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame3Face2:
+li $v0, 1 #Display second number
+add $a0, $zero, $t6
+syscall
+add $t4, $t4, $t6 #Add second number to dealer card total
+beq $t4, 22, DealerTurnGame3 #If first card total outcome is 22 restart dealer turn
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display dealer card total sentence
+la $a0, DealerCardTotal
+syscall
+li $v0, 1 #Display addition from first two cards- dealer ($t4)
+add $a0, $zero, $t4
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+DealerHitOrHoldGame3:
+blt $t4, 17, Dealer3Hit #If the dealer total card number is less than 17 branch to dealer hit
+bgt $t4, 16, Dealer3Hold #If the dealer has 17 or more hold
+Dealer3Hit:
+li $v0, 4 #Display dealer has decided to hit message
+la $a0, Dealer1HitSent
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $a1, 14 #New Random number
+li $v0, 42
+syscall
+add $a0, $a0, 1
+move $t6, $a0 #Store random number in $t6
+syscall
+beq $t6, 11, DealerGame3Jack3 #If number comes out to 11 branch to turn it into 10
+and show face card
+beq $t6, 12, DealerGame3Queen3 #If number comes out to 12 branch to turn it into 10
+and show face card
+beq $t6, 13, DealerGame3King3 #If number comes out to 13 branch to turn it into 10
+and show face card
+beq $t6, 14, DealerGame3Ace3 #If number comes out to 14 branch to turn it into 11
+and show face card
+PostDealerGame3Face3:
+li $v0, 1 #Display random number
+add $a0, $zero, $t6
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+add $t4, $t4, $t6 #Add the new number to the dealer card total
+li $v0, 4 #Display dealer card total sentence
+la $a0, DealerCardTotal
+syscall
+li $v0, 1 #Display addition from first two cards- dealer ($t4)
+add $a0, $zero, $t4
+syscall
+li $v0, 4 #New Line
+la $a0, NewLine
+syscall
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+bgt $t4, 21, Dealer3Bust #If total is over 21 branch to dealer 3 bust
+j DealerHitOrHoldGame3
+Dealer3Bust: #If dealer has a bust, make fucntions to add money to total player money
+li $v0, 4 #Display dealer bust sentence
+la $a0, DealerBustSent
+syscall
+PrePlayer1BustWin3: #Check if player 1 needs to be skipped
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the first element from the array onto $t5
+blt $t5, 1, PrePlayer2BustWin3 #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+Player1BustWin3:
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, PlayerBetArray3($t6) #Load the first element from the array onto $t5 (Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 1 total money onto $t7 (Total
+Money)
+add $t7, $t7, $t5 #add bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+PrePlayer2BustWin3: #Check if player 2 needs to be skipped
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the second element from the array onto $t5
+blt $t5, 1, PrePlayer3BustWin3 #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+Player2BustWin3:
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, PlayerBetArray3($t6) #Load the second element from the array onto $t5 (Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 2 total money onto $t7 (Total
+Money)
+add $t7, $t7, $t5 #add bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+PrePlayer3BustWin3: #Check if player 3 needs to be skipped
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the third element from the array onto $t5
+blt $t5, 1, PostPlayerWinBust3 #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+Player3BustWin3:
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, PlayerBetArray3($t6) #Load the third element from the array onto $t5 (Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 3 total money onto $t7 (Total
+Money)
+add $t7, $t7, $t5 #add bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+PostPlayerWinBust3:
+j PreGame3
+Dealer3Hold: #Use this function if the dealer held
+PrePlayer1EndRoundCheck3: #Check if player 1 needs to be skipped
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the first element from the array onto $t5
+blt $t5, 1, PrePlayer2EndRoundCheck3 #If player is out of money branch to skip
+player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+bgt $t1, 21, PrePlayer2EndRoundCheck3 #If player total card is over 21 (bust) skip to player 2
+Player1EndRoundCheck3:
+beq $t1, $t4, Player1Draw3 #If player 1 and dealer had draw, branch
+bgt $t1, $t4, Player1Win3 #If player 1 has higher card, branch
+blt $t1, $t4, Player1Loss3 #If player 1 has lower card, branch
+Player1Draw3:
+li $v0, 4 #Display draw message for player 1
+la $a0, Player1Draw
+syscall
+j PrePlayer2EndRoundCheck3
+Player1Win3:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 1 won round
+la $a0, Player1WonSent
+syscall
+li $t6, 0 #Set the register to 0 for retreiving first element from array
+lw $t5, PlayerBetArray3($t6) #Load the first element from the array onto $t5
+(Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 1 total money onto $t7
+(Total Money)
+add $t7, $t7, $t5 #add bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j PrePlayer2EndRoundCheck3
+Player1Loss3:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 1 lost round
+la $a0, Player1Loss2Sent
+syscall
+li $t6, 0 #Set the register to 4 for retreiving second element from array
+lw $t5, PlayerBetArray3($t6) #Load the second element from the array onto $t5
+(Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 1 total money onto $t7
+(Total Money)
+sub $t7, $t7, $t5 #subtract bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j PrePlayer2EndRoundCheck3
+PrePlayer2EndRoundCheck3: #Check if player 2 needs to be skipped
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the second element from the array onto $t5
+blt $t5, 1, PrePlayer3EndRoundCheck3 #If player is out of money branch to skip
+player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+bgt $t2, 21, PrePlayer3EndRoundCheck3 #If player total card is over 21 (bust) skip to player 3
+Player2EndRoundCheck3:
+beq $t2, $t4, Player2Draw3 #If player 2 and dealer had draw, branch
+bgt $t2, $t4, Player2Win3 #If player 2 has higher card, branch
+blt $t2, $t4, Player2Loss3 #If player 2 has lower card, branch
+Player2Draw3:
+li $v0, 4 #Display draw message for player 2
+la $a0, Player2Draw
+syscall
+j PrePlayer3EndRoundCheck3
+Player2Win3:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 2 won round
+la $a0, Player2WonSent
+syscall
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, PlayerBetArray3($t6) #Load the second element from the array onto $t5
+(Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 2 total money onto $t7
+(Total Money)
+add $t7, $t7, $t5 #add bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j PrePlayer3EndRoundCheck3
+Player2Loss3:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 2 lost round
+la $a0, Player2Loss2Sent
+syscall
+li $t6, 4 #Set the register to 4 for retreiving second element from array
+lw $t5, PlayerBetArray3($t6) #Load the second element from the array onto $t5
+(Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 2 total money onto $t7
+(Total Money)
+sub $t7, $t7, $t5 #subtract bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j PrePlayer3EndRoundCheck3
+PrePlayer3EndRoundCheck3: #Check if player 3 needs to be skipped
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, TotalPlayerMoneyArray3($t6) #Load the third element from the array onto $t5
+blt $t5, 1, EndOfRound3 #If player is out of money branch to skip player
+sw $t5, TotalPlayerMoneyArray3($t6) #Store value in $t5 back into the array
+bgt $t3, 21, EndOfRound3 #If player total card is over 21 (bust) skip to player 2
+Player3EndRoundCheck3:
+beq $t3, $t4, Player3Draw3 #If player 3 and dealer had draw, branch
+bgt $t3, $t4, Player3Win3 #If player 3 has higher card, branch
+blt $t3, $t4, Player3Loss3 #If player 3 has lower card, branch
+Player3Draw3:
+li $v0, 4 #Display draw message for player 3
+la $a0, Player3Draw
+syscall
+j EndOfRound3
+Player3Win3:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 3 won round
+la $a0, Player3WonSent
+syscall
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, PlayerBetArray3($t6) #Load the third element from the array onto $t5
+(Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 3 total money onto $t7
+(Total Money)
+add $t7, $t7, $t5 #add bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j EndOfRound3
+Player3Loss3:
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Display sentence that player 3 lost round
+la $a0, Player3Loss2Sent
+syscall
+li $t6, 8 #Set the register to 8 for retreiving third element from array
+lw $t5, PlayerBetArray3($t6) #Load the third element from the array onto $t5
+(Bet)
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 3 total money onto $t7
+(Total Money)
+sub $t7, $t7, $t5 #subtract bet to total money
+sw $t5, PlayerBetArray3($t6) #store the value in $t5 back into the array
+sw $t7, TotalPlayerMoneyArray3($t6) #Store value in $t7 back into the array
+j EndOfRound3
+EndOfRound3:
+j PreGame3
+HitOrHoldErrorPlayer3Game3:
+li $v0, 4 #Display invalid entry notification
+la $a0, InvalidEntry
+syscall
+j Player3HitOrHoldGame3
+HitOrHoldErrorPlayer2Game3:
+li $v0, 4 #Display invalid entry notification
+la $a0, InvalidEntry
+syscall
+j Player2HitOrHoldGame3
+HitOrHoldErrorPlayer1Game3:
+li $v0, 4 #Display invalid entry notification
+la $a0, InvalidEntry
+syscall
+j Player1HitOrHoldGame3
+Player1Game3ErrorBet:
+li $v0, 4 #Display error in bet
+la $a0, ErrorBet
+syscall
+j Player1Game3Bet
+Player2Game3ErrorBet:
+li $v0, 4 #Display error in bet
+la $a0, ErrorBet
+syscall
+j Player2Game3Bet
+Player3Game3ErrorBet:
+li $v0, 4 #Display error in bet
+la $a0, ErrorBet
+syscall
+j Player3Game3Bet
+EndGame3Money: #This function ends the game when all players have run out of money
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Notification that all players lost their money
+la $a0, AllPlayersMoneyLoss
+syscall
+li $v0, 10
+syscall
+EndGame3: #This function will end the game when it reaches 10 rounds
+li $v0, 4 #Skip to next line
+la $a0, NewLine
+syscall
+li $v0, 4 #Notification that round 10 is over
+la $a0, GameOverRound
+syscall
+li $v0, 4 #Player 1:
+la $a0, Player1End$
+syscall
+li $t6, 0
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 1 total money onto $t7 (Total Money)
+li $v0, 1
+add $a0, $zero, $t7 #Display money player 1
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Player 2:
+la $a0, Player2End$
+syscall
+li $t6, 4
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 2 total money onto $t7 (Total Money)
+li $v0, 1
+add $a0, $zero, $t7 #Display money player 2
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 4 #Player 3:
+la $a0, Player3End$
+syscall
+li $t6, 8
+lw $t7, TotalPlayerMoneyArray3($t6) #Load player 3 total money onto $t7 (Total Money)
+li $v0, 1
+add $a0, $zero, $t7 #Display money player 3
+syscall
+li $v0, 4 #Display $ sign
+la $a0, MoneySign
+syscall
+li $v0, 10 #end
+syscall
+###### Player 1 Face card functions
+Player1Game3Jack1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game3Face1
+Player1Game3Queen1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game3Face1
+Player1Game3King1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game3Face1
+Player1Game3Ace1:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game3Face1
+######
+Player1Game3Jack2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game3Face2
+Player1Game3Queen2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game3Face2
+Player1Game3King2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game3Face2
+Player1Game3Ace2:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game3Face2
+######
+Player1Game3Jack3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer1Game3Face3
+Player1Game3Queen3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer1Game3Face3
+Player1Game3King3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer1Game3Face3
+Player1Game3Ace3:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer1Game3Face3
+########## Player 2 Face card functions
+Player2Game3Jack1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer2Game3Face1
+Player2Game3Queen1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer2Game3Face1
+Player2Game3King1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer2Game3Face1
+Player2Game3Ace1:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer2Game3Face1
+#########
+Player2Game3Jack2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer2Game3Face2
+Player2Game3Queen2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer2Game3Face2
+Player2Game3King2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer2Game3Face2
+Player2Game3Ace2:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer2Game3Face2
+########
+Player2Game3Jack3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer2Game3Face3
+Player2Game3Queen3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer2Game3Face3
+Player2Game3King3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer2Game3Face3
+Player2Game3Ace3:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer2Game3Face3
+############# Player 3 Face card
+Player3Game3Jack1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer3Game3Face1
+Player3Game3Queen1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer3Game3Face1
+Player3Game3King1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer3Game3Face1
+Player3Game3Ace1:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer3Game3Face1
+###########
+Player3Game3Jack2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer3Game3Face2
+Player3Game3Queen2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer3Game3Face2
+Player3Game3King2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer3Game3Face2
+Player3Game3Ace2:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer3Game3Face2
+###########
+Player3Game3Jack3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostPlayer3Game3Face3
+Player3Game3Queen3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostPlayer3Game3Face3
+Player3Game3King3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostPlayer3Game3Face3
+Player3Game3Ace3:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostPlayer3Game3Face3
+########## Dealer face card functions
+DealerGame3Jack1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame3Face1
+DealerGame3Queen1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame3Face1
+DealerGame3King1:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame3Face1
+DealerGame3Ace1:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame3Face1
+#########
+DealerGame3Jack2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame3Face2
+DealerGame3Queen2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame3Face2
+DealerGame3King2:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame3Face2
+DealerGame3Ace2:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame3Face2
+###############
+DealerGame3Jack3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Jack sign
+la $a0, Jack
+syscall
+j PostDealerGame3Face3
+DealerGame3Queen3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display Queen sign
+la $a0, Queen
+syscall
+j PostDealerGame3Face3
+DealerGame3King3:
+li $t6, 10#Load 10 into register
+li $v0, 4 #Display King sign
+la $a0, King
+syscall
+j PostDealerGame3Face3
+DealerGame3Ace3:
+li $t6, 11#Load 11 into register
+li $v0, 4 #Display Ace sign
+la $a0, Ace
+syscall
+j PostDealerGame3Face3
+Playeramounterror: #This function displays error statement and jumps back to
+askforplayeramount
+li $v0, 4 #Display error1
+la $a0, Error1
+syscall
+j Askforplayeramount
